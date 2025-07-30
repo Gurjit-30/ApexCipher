@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Encryption & Decryption Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="main-title">
+                    <i class="fas fa-shield-alt"></i>
+                    ApexCipher
+                </h1>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" data-mode="encrypt">
+                        <i class="fas fa-lock"></i> Encrypt
+                    </button>
+                    <button class="mode-btn" data-mode="decrypt">
+                        <i class="fas fa-unlock"></i> Decrypt
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel - Encryption/Decryption Form -->
+            <div class="form-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title" id="panel-title">
+                        <i class="fas fa-lock"></i> AES Encryption
+                    </h2>
+                </div>
+
+                <div class="form-container">
+                    <!-- Input Section -->
+                    <div class="input-section">
+                        <div class="form-group">
+                            <label for="input-text" class="form-label">
+                                <i class="fas fa-file-text"></i>
+                                <span id="input-label">Encryption Text</span>
+                            </label>
+                            <textarea 
+                                id="input-text" 
+                                class="form-textarea" 
+                                placeholder="Enter text to encrypt..."
+                                rows="8"
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="secret-key" class="form-label">
+                                <i class="fas fa-key"></i> Secret Key
+                            </label>
+                            <input 
+                                type="text" 
+                                id="secret-key" 
+                                class="form-input" 
+                                placeholder="Enter your secret key or type 'generate' for AI key"
+                            >
+                            <div id="password-strength" class="password-strength"></div>
+                        </div>
+
+                        <!-- Key Size Selection -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-cog"></i> Encryption Key Size
+                            </label>
+                            <div class="button-group">
+                                <button class="option-btn active" data-key-size="128">128 Bits</button>
+                                <button class="option-btn" data-key-size="192">192 Bits</button>
+                                <button class="option-btn" data-key-size="256">256 Bits</button>
+                            </div>
+                        </div>
+
+                        <!-- Encryption Mode -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-random"></i> Encryption Mode
+                            </label>
+                            <div class="button-group">
+                                <button class="option-btn active" data-mode="CBC">CBC</button>
+                                <button class="option-btn" data-mode="ECB">ECB</button>
+                            </div>
+                        </div>
+
+                        <!-- IV Field -->
+                        <div class="form-group">
+                            <label for="iv-input" class="form-label">
+                                <i class="fas fa-vector-square"></i> IV (optional)
+                            </label>
+                            <input 
+                                type="text" 
+                                id="iv-input" 
+                                class="form-input" 
+                                placeholder="IV"
+                            >
+                        </div>
+
+                        <!-- Output Format -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-code"></i> 
+                                <span id="format-label">Output Format</span>
+                            </label>
+                            <div class="button-group">
+                                <button class="option-btn active" data-format="base64">Base64</button>
+                                <button class="option-btn" data-format="hex">HEX</button>
+                            </div>
+                        </div>
+
+                        <!-- Hash Algorithm (for hashing tools) -->
+                        <div class="form-group" style="display: none;">
+                            <label class="form-label">
+                                <i class="fas fa-hashtag"></i> Hash Algorithm
+                            </label>
+                            <div class="button-group">
+                                <button class="option-btn active" data-hash-algo="sha256">SHA256</button>
+                                <button class="option-btn" data-hash-algo="sha1">SHA1</button>
+                                <button class="option-btn" data-hash-algo="md5">MD5</button>
+                            </div>
+                        </div>
+
+                        <!-- Operation Type (for encoding tools) -->
+                        <div class="form-group" style="display: none;">
+                            <label class="form-label">
+                                <i class="fas fa-exchange-alt"></i> Operation
+                            </label>
+                            <div class="button-group">
+                                <button class="option-btn active" data-operation="encode">Encode</button>
+                                <button class="option-btn" data-operation="decode">Decode</button>
+                            </div>
+                        </div>
+
+                        <!-- AI Features Section -->
+                        <div class="form-group">
+                            <div class="ai-features">
+                                <button type="button" class="ai-btn" onclick="generateAISuggestion()">
+                                    <i class="fas fa-robot"></i> AI Suggestions
+                                </button>
+                                <button type="button" class="ai-btn" onclick="analyzeSecurity()">
+                                    <i class="fas fa-shield-alt"></i> Security Analysis
+                                </button>
+                                <button type="button" class="ai-btn" onclick="autoOptimize()">
+                                    <i class="fas fa-magic"></i> Auto Optimize
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="form-group">
+                            <button id="action-btn" class="action-btn">
+                                <i class="fas fa-lock"></i>
+                                <span id="action-text">Encrypt</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Output Section -->
+                    <div class="output-section">
+                        <div class="form-group">
+                            <label for="output-text" class="form-label">
+                                <i class="fas fa-file-code"></i>
+                                <span id="output-label">Encrypted Text</span>
+                            </label>
+                            <textarea 
+                                id="output-text" 
+                                class="form-textarea" 
+                                placeholder="Encrypted output will appear here..."
+                                rows="8"
+                                readonly
+                            ></textarea>
+                            <div class="output-actions">
+                                <button class="copy-btn" id="copy-btn">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                                <button class="clear-btn" id="clear-btn">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="ai-btn" onclick="analyzeOutput()">
+                                    <i class="fas fa-brain"></i> AI Analyze
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar - Tools List -->
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-tools"></i> Available Tools
+                    </h3>
+
+                    <!-- Encryption Tools -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-lock"></i> Encryption Tools
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item active" data-tool="aes">
+                                <i class="fas fa-shield-alt"></i>
+                                AES Encryption / Decryption
+                            </li>
+                            <li class="tool-item" data-tool="rsa">
+                                <i class="fas fa-key"></i>
+                                RSA Encryption / Decryption
+                            </li>
+                            <li class="tool-item" data-tool="des">
+                                <i class="fas fa-lock"></i>
+                                DES Encryption / Decryption
+                            </li>
+                            <li class="tool-item" data-tool="triple-des">
+                                <i class="fas fa-lock-triple"></i>
+                                Triple DES Encryption / Decryption
+                            </li>
+                            <li class="tool-item" data-tool="jasypt">
+                                <i class="fas fa-user-secret"></i>
+                                Jasypt Encryption / Decryption
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Hashing Tools -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-hashtag"></i> Hashing Tools
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item" data-tool="bcrypt">
+                                <i class="fas fa-shield"></i>
+                                Bcrypt Hash Generator
+                            </li>
+                            <li class="tool-item" data-tool="md5">
+                                <i class="fas fa-fingerprint"></i>
+                                MD5 Hash Generator
+                            </li>
+                            <li class="tool-item" data-tool="sha256">
+                                <i class="fas fa-hash"></i>
+                                SHA 256 Hash Generator
+                            </li>
+                            <li class="tool-item" data-tool="hmac">
+                                <i class="fas fa-keyboard"></i>
+                                HMAC Hash Generator
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Encoding Tools -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-code"></i> Encoding Tools
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item" data-tool="base64">
+                                <i class="fas fa-file-code"></i>
+                                Base64 Encoding / Decoding
+                            </li>
+                            <li class="tool-item" data-tool="hex">
+                                <i class="fas fa-hexagon"></i>
+                                Hex Encoding / Decoding
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Image Tools -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-image"></i> Image Tools
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item" data-tool="image-to-pdf">
+                                <i class="fas fa-file-pdf"></i>
+                                Image to PDF Converter
+                            </li>
+                            <li class="tool-item" data-tool="image-converter">
+                                <i class="fas fa-exchange-alt"></i>
+                                Image Converter
+                            </li>
+                            <li class="tool-item" data-tool="image-resizer">
+                                <i class="fas fa-compress"></i>
+                                Image Size Reducer
+                            </li>
+                            <li class="tool-item" data-tool="video-thumbnail">
+                                <i class="fas fa-video"></i>
+                                Video Thumbnail Generator
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Utility Tools -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-calculator"></i> Utility Tools
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item" data-tool="date-calculator">
+                                <i class="fas fa-calendar"></i>
+                                Date Difference Calculator
+                            </li>
+                            <li class="tool-item" data-tool="age-calculator">
+                                <i class="fas fa-birthday-cake"></i>
+                                Age Calculator
+                            </li>
+                            <li class="tool-item" data-tool="fuel-calculator">
+                                <i class="fas fa-gas-pump"></i>
+                                Fuel to Distance Calculator
+                            </li>
+                            <li class="tool-item" data-tool="pdf-merger">
+                                <i class="fas fa-object-group"></i>
+                                PDF Merger
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Finance Calculators -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-chart-line"></i> Finance Calculators
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item" data-tool="fixed-deposit">
+                                <i class="fas fa-piggy-bank"></i>
+                                Fixed Deposit Calculator
+                            </li>
+                            <li class="tool-item" data-tool="sip-calculator">
+                                <i class="fas fa-chart-pie"></i>
+                                SIP Calculator
+                            </li>
+                            <li class="tool-item" data-tool="tip-calculator">
+                                <i class="fas fa-percentage"></i>
+                                TIP Calculator
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Unit Converters -->
+                    <div class="tool-category">
+                        <h4 class="category-title">
+                            <i class="fas fa-ruler"></i> Unit Converters
+                        </h4>
+                        <ul class="tool-list">
+                            <li class="tool-item" data-tool="length-converter">
+                                <i class="fas fa-ruler-combined"></i>
+                                Length Unit Converter
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="notification-text">Operation completed successfully!</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="utilities.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
